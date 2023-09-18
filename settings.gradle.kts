@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Clean Movies"
 include(":app")
- 
+include(":data")
+include(":domain")

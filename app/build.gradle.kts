@@ -76,4 +76,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":domain")))
 }
