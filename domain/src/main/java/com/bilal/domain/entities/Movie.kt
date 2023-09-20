@@ -1,9 +1,14 @@
 package com.bilal.domain.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "movie")
 data class Movie(
     val adult: Boolean,
     val backdrop_path: String,
     val genre_ids: List<Int>,
+    @PrimaryKey(autoGenerate = false)
     val id: Int,
     val original_language: String,
     val original_title: String,
