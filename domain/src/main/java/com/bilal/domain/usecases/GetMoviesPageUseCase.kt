@@ -9,7 +9,7 @@ import com.bilal.domain.repo.IMoviesRepo
  * Created by Bilal Hairab on 20/09/2023.
  */
 
-data class GetMoviesPageParams(val page: Int, val query: String)
+data class GetMoviesPageParams(val page: Int, val query: String = "")
 
 class GetMoviesPageUseCase(private val moviesRepo: IMoviesRepo) :
     BaseUseCase<GetMoviesPageParams, List<Movie>>(moviesRepo) {

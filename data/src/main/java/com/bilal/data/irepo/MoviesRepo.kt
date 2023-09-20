@@ -22,7 +22,7 @@ class MoviesRepo(private val apiService: MoviesAPIService, private val moviesDao
 
     override suspend fun getMoviesPageFromServer(page: Int, query: String): List<Movie> {
         return try {
-            apiService.getMoviesPage("FIXME", page, query).results
+            apiService.getMoviesPage(page, query).results
         } catch (e: Exception) {
             e.printStackTrace();
             emptyList()
