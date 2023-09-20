@@ -78,4 +78,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(project(mapOf("path" to ":data")))
     implementation(project(mapOf("path" to ":domain")))
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
 }
