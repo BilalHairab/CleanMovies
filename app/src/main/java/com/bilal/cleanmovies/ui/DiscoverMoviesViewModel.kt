@@ -21,7 +21,7 @@ class DiscoverMoviesViewModel @Inject constructor(private val moviesUseCase: Get
     ViewModel() {
     private val LOG_TAG = "DiscoverMoviesViewModel"
     private val _uiState = MutableStateFlow<DiscoverMoviesUiState>(DiscoverMoviesUiState.Idle)
-    private var nextPage = 0
+    private var nextPage = 1
     val uiState: StateFlow<DiscoverMoviesUiState> = _uiState
 
     init {
