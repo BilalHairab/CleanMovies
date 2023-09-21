@@ -16,6 +16,6 @@ interface MoviesDao {
     @Insert
     suspend fun insertMoviesList(movies: List<Movie>)
 
-    @Query("select * from movie LIMIT(20) OFFSET(:page * 20)")
+    @Query("select * from movie LIMIT(20) OFFSET((:page-1) * 20)")
     suspend fun getMoviesPage(page: Int): List<Movie>
 }
