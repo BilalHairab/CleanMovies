@@ -12,12 +12,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Bilal Hairab on 15/09/2023.
  */
 @HiltViewModel
-class DiscoverMoviesViewModel @Inject constructor(private val moviesUseCase: GetMoviesPageUseCase) :
+class DiscoverMoviesViewModel @Inject constructor(
+    @Named("movies_api_key") private val apiKey: String,
+    private val moviesUseCase: GetMoviesPageUseCase
+) :
     ViewModel() {
     private val LOG_TAG = "DiscoverMoviesViewModel"
     private val _uiState = MutableStateFlow<DiscoverMoviesUiState>(DiscoverMoviesUiState.Idle)
@@ -32,7 +36,7 @@ class DiscoverMoviesViewModel @Inject constructor(private val moviesUseCase: Get
         viewModelScope.launch {
             try {
                 _uiState.emit(DiscoverMoviesUiState.LoadingState)
-                val movies = moviesUseCase(GetMoviesPageParams(nextPage))
+                val movies = moviesUseCase(GetMoviesPageParams(apiKey, nextPage))
                 nextPage += 1
                 _uiState.emit(DiscoverMoviesUiState.MoviesAvailable((movies as DataHolder.Success).data))
             } catch (e: Exception) {

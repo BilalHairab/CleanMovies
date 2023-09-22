@@ -10,8 +10,8 @@ import com.bilal.domain.repo.IMoviesRepo
  */
 class MoviesRepo(private val apiService: MoviesAPIService, private val moviesDao: MoviesDao) :
     IMoviesRepo {
-    override suspend fun getMoviesPage(page: Int, query: String?): List<Movie> {
-        val serverMovies = getMoviesPageFromServer(page, query)
+    override suspend fun getMoviesPage(apiKey: String, page: Int, query: String?): List<Movie> {
+        val serverMovies = getMoviesPageFromServer(apiKey, page, query)
         if (serverMovies.isNotEmpty()) {
             saveMoviesPageInDB(serverMovies)
             return serverMovies
@@ -20,9 +20,9 @@ class MoviesRepo(private val apiService: MoviesAPIService, private val moviesDao
         return getMoviesPageFromDB(page)
     }
 
-    override suspend fun getMoviesPageFromServer(page: Int, query: String?): List<Movie> {
+    override suspend fun getMoviesPageFromServer(apiKey: String, page: Int, query: String?): List<Movie> {
         return try {
-            apiService.getMoviesPage("114fe6670282f6a632638661e5e86dee", page).results
+            apiService.getMoviesPage(apiKey, page).results
         } catch (e: Exception) {
             e.printStackTrace();
             emptyList()

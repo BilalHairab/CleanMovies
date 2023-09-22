@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bilal.cleanmovies.ui.theme.CleanMoviesTheme
 import com.bilal.domain.entities.Movie
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Bilal Hairab on 16/09/2023.
@@ -130,16 +132,16 @@ fun MovieCard(movie: Movie) {
             .clickable { },
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            AsyncImage(
-                model = movie.backdrop_path,
-                contentDescription = "Translated description of what the image contains",
-                contentScale = ContentScale.Fit
-            )
             Text(
                 text = movie.title,
                 modifier = Modifier.padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp
+            )
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w500" + movie.backdrop_path,
+                contentDescription = "Translated description of what the image contains",
+                contentScale = ContentScale.FillBounds
             )
             Text(
                 text = movie.overview,
