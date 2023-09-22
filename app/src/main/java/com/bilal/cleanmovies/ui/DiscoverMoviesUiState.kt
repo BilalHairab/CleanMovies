@@ -7,8 +7,7 @@ import com.bilal.domain.entities.Movie
  */
 sealed class DiscoverMoviesUiState {
     object Idle: DiscoverMoviesUiState()
-    object LoadingState: DiscoverMoviesUiState()
-    data class MoviesAvailable(val movies: List<Movie>): DiscoverMoviesUiState()
+    data class LoadingWithMoviesAvailable(val movies: List<Movie>, val loading: Boolean): DiscoverMoviesUiState()
     data class ErrorState(val error: String): DiscoverMoviesUiState()
 
 }

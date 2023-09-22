@@ -61,12 +61,8 @@ fun ConsumeState(uiState: DiscoverMoviesUiState, viewModel: DiscoverMoviesViewMo
             IdleState()
         }
 
-        is DiscoverMoviesUiState.LoadingState -> {
-            LoadingState()
-        }
-
-        is DiscoverMoviesUiState.MoviesAvailable -> {
-            MoviesList(uiState.movies, viewModel)
+        is DiscoverMoviesUiState.LoadingWithMoviesAvailable -> {
+            MoviesList(uiState.movies, uiState.loading, viewModel)
         }
 
         is DiscoverMoviesUiState.ErrorState -> {
@@ -78,11 +74,6 @@ fun ConsumeState(uiState: DiscoverMoviesUiState, viewModel: DiscoverMoviesViewMo
 @Composable
 fun IdleState() {
     OneTextState("Idle")
-}
-
-@Composable
-fun LoadingState() {
-    OneTextState("Loading Movies", false)
 }
 
 @Composable
@@ -116,17 +107,20 @@ fun ErrorState(error: String) {
 private const val LOG_TAG = "MoviesScreen"
 
 @Composable
-fun MoviesList(list: List<Movie>, viewModel: DiscoverMoviesViewModel) {
-
+fun MoviesList(list: List<Movie>, loading: Boolean, viewModel: DiscoverMoviesViewModel) {
     val listState = rememberLazyListState()
-    LazyColumn(state = listState) {
-        if (listState.firstVisibleItemIndex > 0.8 * list.size) {
-            Log.d(LOG_TAG, "MoviesList: next page")
-            viewModel.getMoviesPage()
+    Column {
+        LazyColumn(state = listState) {
+            if (listState.firstVisibleItemIndex > 0.8 * list.size) {
+                Log.d(LOG_TAG, "MoviesList: next page")
+                viewModel.getMoviesPage()
+            }
+            items(list) {
+                MovieCard(it)
+            }
         }
-        items(list) {
-            MovieCard(it)
-        }
+        if (loading)
+            OneTextState("Loading Movies", false)
     }
 }
 
