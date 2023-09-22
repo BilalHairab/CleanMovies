@@ -42,7 +42,6 @@ class DiscoverMoviesViewModel @Inject constructor(
                 try {
                     _uiState.emit(DiscoverMoviesUiState.LoadingWithMoviesAvailable(loadedMovies, true))
                     val movies = moviesUseCase(GetMoviesPageParams(apiKey, nextPage))
-                    delay(4000)
                     loadedMovies.addAll((movies as DataHolder.Success).data)
                     nextPage += 1
                     _uiState.emit(DiscoverMoviesUiState.LoadingWithMoviesAvailable(loadedMovies, false))
