@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bilal.domain.entities.DataHolder
+import com.bilal.domain.entities.Movie
 import com.bilal.domain.usecases.GetMoviesPageParams
 import com.bilal.domain.usecases.GetMoviesPageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ class DiscoverMoviesViewModel @Inject constructor(
     ViewModel() {
     private val LOG_TAG = "DiscoverMoviesViewModel"
     private val _uiState = MutableStateFlow<DiscoverMoviesUiState>(DiscoverMoviesUiState.Idle)
+    private val _moviesState = MutableStateFlow<List<Movie>>(emptyList())
     private var nextPage = 1
     val uiState: StateFlow<DiscoverMoviesUiState> = _uiState
 
@@ -39,8 +41,10 @@ class DiscoverMoviesViewModel @Inject constructor(
                 try {
                     _uiState.emit(DiscoverMoviesUiState.LoadingState)
                     val movies = moviesUseCase(GetMoviesPageParams(apiKey, nextPage))
+                    val newMovies = _moviesState.value + (movies as DataHolder.Success).data
+                    _moviesState.emit(newMovies)
                     nextPage += 1
-                    _uiState.emit(DiscoverMoviesUiState.MoviesAvailable((movies as DataHolder.Success).data))
+                    _uiState.emit(DiscoverMoviesUiState.MoviesAvailable(newMovies))
                 } catch (e: Exception) {
                     _uiState.emit(DiscoverMoviesUiState.ErrorState(e.message!!))
                     Log.e(LOG_TAG, "getMovies: ${e.message}");
