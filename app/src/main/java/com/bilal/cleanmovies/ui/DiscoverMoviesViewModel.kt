@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
@@ -34,15 +35,17 @@ class DiscoverMoviesViewModel @Inject constructor(
 
     fun getMoviesPage() {
         viewModelScope.launch {
-            try {
-                _uiState.emit(DiscoverMoviesUiState.LoadingState)
-                val movies = moviesUseCase(GetMoviesPageParams(apiKey, nextPage))
-                nextPage += 1
-                _uiState.emit(DiscoverMoviesUiState.MoviesAvailable((movies as DataHolder.Success).data))
-            } catch (e: Exception) {
-                _uiState.emit(DiscoverMoviesUiState.ErrorState(e.message!!))
-                Log.e(LOG_TAG, "getMovies: ${e.message}");
-            }
+//            runBlocking {
+                try {
+                    _uiState.emit(DiscoverMoviesUiState.LoadingState)
+                    val movies = moviesUseCase(GetMoviesPageParams(apiKey, nextPage))
+                    nextPage += 1
+                    _uiState.emit(DiscoverMoviesUiState.MoviesAvailable((movies as DataHolder.Success).data))
+                } catch (e: Exception) {
+                    _uiState.emit(DiscoverMoviesUiState.ErrorState(e.message!!))
+                    Log.e(LOG_TAG, "getMovies: ${e.message}");
+                }
+//            }
         }
     }
 }

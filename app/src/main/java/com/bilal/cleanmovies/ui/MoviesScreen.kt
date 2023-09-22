@@ -1,5 +1,7 @@
 package com.bilal.cleanmovies.ui
 
+import com.bilal.cleanmovies.R
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -32,8 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bilal.cleanmovies.ui.theme.CleanMoviesTheme
 import com.bilal.domain.entities.Movie
-import javax.inject.Inject
-import javax.inject.Named
+import androidx.compose.ui.res.painterResource
 
 /**
  * Created by Bilal Hairab on 16/09/2023.
@@ -47,13 +49,13 @@ fun ShowDiscoveredMovies(viewModel: DiscoverMoviesViewModel) {
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
             val uiState = viewModel.uiState.collectAsState().value
-            ConsumeState(uiState)
+            ConsumeState(uiState, viewModel)
         }
     }
 }
 
 @Composable
-fun ConsumeState(uiState: DiscoverMoviesUiState) {
+fun ConsumeState(uiState: DiscoverMoviesUiState, viewModel: DiscoverMoviesViewModel) {
     when (uiState) {
         is DiscoverMoviesUiState.Idle -> {
             IdleState()
@@ -64,7 +66,7 @@ fun ConsumeState(uiState: DiscoverMoviesUiState) {
         }
 
         is DiscoverMoviesUiState.MoviesAvailable -> {
-            MoviesList(uiState.movies)
+            MoviesList(uiState.movies, viewModel)
         }
 
         is DiscoverMoviesUiState.ErrorState -> {
@@ -111,9 +113,17 @@ fun ErrorState(error: String) {
     OneTextState("Error While Loading categories $error", true)
 }
 
+private const val LOG_TAG = "MoviesScreen"
+
 @Composable
-fun MoviesList(list: List<Movie>) {
-    LazyColumn {
+fun MoviesList(list: List<Movie>, viewModel: DiscoverMoviesViewModel) {
+
+    val listState = rememberLazyListState()
+    LazyColumn(state = listState) {
+        if (listState.firstVisibleItemIndex > 0.8 * list.size) {
+            Log.d(LOG_TAG, "MoviesList: next page")
+            viewModel.getMoviesPage()
+        }
         items(list) {
             MovieCard(it)
         }
@@ -139,6 +149,7 @@ fun MovieCard(movie: Movie) {
                 fontSize = 30.sp
             )
             AsyncImage(
+                placeholder = painterResource(id = R.drawable.placeholder),
                 model = "https://image.tmdb.org/t/p/w500" + movie.backdrop_path,
                 contentDescription = "Translated description of what the image contains",
                 contentScale = ContentScale.FillBounds
