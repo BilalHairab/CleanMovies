@@ -1,3 +1,7 @@
+import com.android.build.api.dsl.ApplicationBuildType
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -23,8 +27,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            addProperties("../config/dev.properties", this)
+        }
         release {
             isMinifyEnabled = false
+            addProperties("../config/release.properties", this)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -83,4 +91,26 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+}
+
+fun addProperties(path: String, applicationBuildType: ApplicationBuildType) {
+    getProps(path).forEach { p ->
+        when (p.key) {
+            "APPNAME" -> {
+                applicationBuildType.resValue("string", "app_name", p.value.toString())
+            }
+
+            "APPLICATION_ID_SUFFIX" -> {
+                applicationBuildType.applicationIdSuffix = p.value.toString()
+            }
+
+            else -> applicationBuildType.buildConfigField("String", p.key.toString(), p.value.toString())
+        }
+    }
+}
+
+fun getProps(path: String): Properties {
+    val props = Properties()
+    props.load(FileInputStream(file(path)))
+    return props
 }
