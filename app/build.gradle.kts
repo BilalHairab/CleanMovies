@@ -1,12 +1,14 @@
 import com.android.build.api.dsl.ApplicationBuildType
 import java.util.Properties
 import java.io.FileInputStream
+import org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask
 
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -58,6 +60,11 @@ android {
         }
     }
 }
+
+tasks.withType(type = KaptGenerateStubsTask::class).configureEach {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+}
+
 dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
@@ -91,6 +98,8 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 }
 
 fun addProperties(path: String, applicationBuildType: ApplicationBuildType) {

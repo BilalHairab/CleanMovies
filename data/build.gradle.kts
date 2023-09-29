@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -33,6 +35,10 @@ android {
     }
 }
 
+tasks.withType(type = KaptGenerateStubsTask::class).configureEach {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
+}
+
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -50,4 +56,6 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    val multidex_version = "2.0.1"
+    implementation("androidx.multidex:multidex:$multidex_version")
 }
